@@ -1,0 +1,12 @@
+[package]
+name = "binfmt-dispatcher"
+version = "0.1.0"
+authors = ["Davide Cavalca <davide@cavalca.name>"]
+edition = "2021"
+description = "Smart dispatcher for binfmt-misc"
+repository = "https://github.com/davide125/binfmt-dispatcher"
+license = "MIT"
+
+[dependencies]
+libc = "0.2.159"
+nix = "0.29.0"
