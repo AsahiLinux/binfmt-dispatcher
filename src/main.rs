@@ -1,6 +1,7 @@
 use libc::{sysconf, _SC_PAGESIZE};
 use std::env;
 use std::ffi::OsString;
+use std::fs::read_link;
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
 use std::process::Command;
@@ -21,7 +22,7 @@ fn main() {
     let args: Vec<OsString> = env::args_os().skip(1).collect();
 
     // File descriptor 3 is where binfmt_misc typically passes the executable
-    let binary = "/proc/self/fd/3";
+    let binary = read_link("/proc/self/fd/3").unwrap();
 
     // TODO make this configurable
     let emulator = "/usr/bin/FEXInterpreter";
