@@ -8,5 +8,7 @@ repository = "https://github.com/davide125/binfmt-dispatcher"
 license = "MIT"
 
 [dependencies]
+config = "0.15.8"
 libc = "0.2.159"
 nix = "0.29.0"
+serde = { version = "1.0.217", features = ["derive"] }

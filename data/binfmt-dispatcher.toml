@@ -1,0 +1,26 @@
+[defaults]
+emulator = "fex"
+
+[emulators]
+
+[emulators.box64]
+path = "/usr/bin/box64"
+use_muvm = false
+
+[emulators.fex]
+path = "/usr/bin/FEXInterpreter"
+use_muvm = true
+
+[emulators.qemu]
+path = "/usr/bin/qemu-x86_64"
+use_muvm = false
+
+[emulators.qemu-static]
+path = "/usr/bin/qemu-x86_64-static"
+use_muvm = false
+
+[binaries]
+
+# [binaries.foo]
+# path = "/usr/bin/foo"
+# emulator = "box64"

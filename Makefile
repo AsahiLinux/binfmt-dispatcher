@@ -2,6 +2,7 @@ DESTDIR ?=
 PREFIX ?= /usr
 BINDIR ?= $(PREFIX)/bin
 BINFMTDIR ?= $(PREFIX)/lib/binfmt.d
+SYSCONFIGDIR ?= /etc
 
 RUSTFLAGS ?= --release
 
@@ -26,6 +27,7 @@ install-bin:
 install-data:
 	install -Dpm0644 -t $(DESTDIR)$(BINFMTDIR)/ data/binfmt-dispatcher-x86.conf
 	install -Dpm0644 -t $(DESTDIR)$(BINFMTDIR)/ data/binfmt-dispatcher-x86_64.conf
+	install -Dpm0644 -t $(DESTDIR)$(SYSCONFIGDIR)/ data/binfmt-dispatcher.toml
 
 uninstall: uninstall-bin uninstall-data
 
