@@ -1,6 +1,7 @@
 use libc::{sysconf, _SC_PAGESIZE};
+use std::collections::HashMap;
 use std::env;
-use std::ffi::{OsStr, OsString};
+use std::ffi::OsString;
 use std::fs::{canonicalize, read_link};
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
@@ -30,8 +31,8 @@ struct Binaries {
 #[derive(Debug, Deserialize)]
 struct ConfigFile {
     defaults: Defaults,
-    emulators: std::collections::HashMap<String, Emulator>,
-    binaries: std::collections::HashMap<String, Binaries>,
+    emulators: HashMap<String, Emulator>,
+    binaries: HashMap<String, Binaries>,
 }
 
 fn get_page_size() -> Option<usize> {
@@ -61,16 +62,16 @@ fn main() {
 
     let mut emulator_id = &settings.defaults.emulator;
 
-    for (_, binary) in &settings.binaries {
-        if Path::new(&binary.path) == std::fs::canonicalize(&args[0]).unwrap() {
+    for binary in settings.binaries.values() {
+        if Path::new(&binary.path) == canonicalize(&args[0]).unwrap() {
             emulator_id = &binary.emulator;
             break;
         }
     }
 
-    let emulator = settings.emulators.get(emulator_id);
-    let emulator_path = &emulator.unwrap().path;
-    let mut use_muvm = emulator.unwrap().use_muvm.unwrap();
+    let emulator = settings.emulators.get(emulator_id).unwrap();
+    let emulator_path = &emulator.path;
+    let mut use_muvm = emulator.use_muvm.unwrap();
 
     if use_muvm {
         if let Some(size) = get_page_size() {
@@ -100,7 +101,7 @@ fn main() {
 
     // Execute the command and replace the current process
     // Use a panic instead of expecting a return value
-    command.exec();
+    let _ = command.exec();
 
     // If exec fails, it will not return; however, we include this to handle the case.
     eprintln!("Failed to execute binary");
