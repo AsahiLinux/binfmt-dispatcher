@@ -4,7 +4,7 @@
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
   <vendor>binfmt-dispatcher</vendor>
-  <vendor_url>https://github.com/davide125/binfmt-dispatcher</vendor_url>
+  <vendor_url>https://github.com/AsahiLinux/binfmt-dispatcher</vendor_url>
 
   <action id="org.AsahiLinux.binfmt_dispatcher.pkexec.dnf">
     <description>Install missing requirements for the interpreter</description>
