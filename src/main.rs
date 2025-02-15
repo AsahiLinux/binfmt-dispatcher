@@ -3,7 +3,7 @@ use crate::config::ConfigFile;
 
 use libc::{sysconf, _SC_PAGESIZE};
 use std::env;
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::fs::{canonicalize, read_link};
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
@@ -58,6 +58,40 @@ fn main() {
     let interpreter = settings.interpreters.get(interpreter_id).unwrap();
     let interpreter_name = interpreter.name.as_ref().unwrap();
     let interpreter_path = &interpreter.path;
+    let mut interpreter_missing_paths = vec![];
+    for path in interpreter.required_paths.as_ref().unwrap() {
+        let p = Path::new(OsStr::new(path));
+        if !p.exists() {
+            interpreter_missing_paths.push(p);
+        }
+    }
+    if !interpreter_missing_paths.is_empty() {
+        warn!(
+            "Will attempt to install missing requirements for {}",
+            interpreter_name
+        );
+        let mut dnf_command = Command::new("sudo");
+        dnf_command.arg("dnf");
+        dnf_command.arg("install");
+        dnf_command.args(&interpreter_missing_paths);
+        debug!("Running:\n{:#?}", dnf_command);
+        match dnf_command.spawn() {
+            Ok(mut child) => {
+                let status = child.wait().expect("Failed to wait on dnf process");
+                if !status.success() {
+                    error!(
+                        "Failed to install missing requirements: dnf returned {:?}",
+                        status
+                    );
+                    std::process::exit(1);
+                }
+            }
+            Err(e) => {
+                error!("Failed to execute dnf: {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
 
     let mut use_muvm = interpreter.use_muvm.unwrap();
     if use_muvm {

@@ -10,6 +10,7 @@ path = "/usr/bin/box64"
 [interpreters.fex]
 name = "FEX"
 path = "/usr/bin/FEXInterpreter"
+required_paths = ["/usr/share/fex-emu/RootFS/default.erofs"]
 use_muvm = true
 
 [interpreters.qemu]

@@ -15,6 +15,7 @@ pub struct Defaults {
 pub struct Interpreter {
     pub name: Option<String>,
     pub path: String,
+    pub required_paths: Option<Vec<String>>,
     pub use_muvm: Option<bool>,
 }
 
@@ -62,6 +63,16 @@ pub fn parse_config() -> Result<ConfigFile> {
         // Default to the interpreter id as name
         if interpreter.name.is_none() {
             interpreter.name = Some(key.clone());
+        }
+        // Default to the interpreter path as required
+        if interpreter.required_paths.is_none() {
+            interpreter.required_paths = Some(vec![interpreter.path.clone()]);
+        } else {
+            interpreter
+                .required_paths
+                .as_mut()
+                .unwrap()
+                .insert(0, interpreter.path.clone());
         }
         // Default to not using muvm
         if interpreter.use_muvm.is_none() {
