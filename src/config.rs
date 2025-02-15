@@ -8,6 +8,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Defaults {
     pub emulator: String,
+    pub log_level: String,
 }
 
 #[derive(Debug, Deserialize)]

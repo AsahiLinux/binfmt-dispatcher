@@ -10,7 +10,9 @@ license = "MIT"
 [dependencies]
 anyhow = "1.0.95"
 config = "0.15.8"
+env_logger = "0.11.6"
 libc = "0.2.159"
+log = "0.4.25"
 nix = "0.29.0"
 serde = { version = "1.0.217", features = ["derive"] }
 xdg = "2.5.2"

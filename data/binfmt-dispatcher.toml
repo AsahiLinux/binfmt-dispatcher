@@ -1,5 +1,6 @@
 [defaults]
 emulator = "fex"
+log_level = "info"
 
 [emulators]
 
