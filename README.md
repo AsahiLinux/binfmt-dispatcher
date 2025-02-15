@@ -11,6 +11,6 @@ binfmt-dispatcher parses configuration from several sources:
 - `/etc/binfmt-dispatcher.toml`
 - the running user XDG config (usually `$HOME/.config/binfmt-dispatcher/binfmt-dispatcher.toml`)
 
-Configs are parsed in order and later settings win. A sample config is [provided](data/binfmt-dispatcher.toml) and should be fairly self-explanatory.
+Configs are parsed in order and later settings win. A fully commented config is [provided](docs/binfmt-dispatcher.toml) and should be fairly self-explanatory.
 
 When run as an interpreter, binfmt-dispatcher will parse the configs, pick the best interpreter to use based on it and the binary being run, and then run it. If enabled (via the `use_muvm` config setting), binfmt-dispatcher will use [muvm](https://github.com/AsahiLinux/muvm) to execute the interpreter in a microVM if the system page-size is not 4k.

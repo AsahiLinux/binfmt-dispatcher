@@ -5,8 +5,6 @@ log_level = "info"
 [muvm]
 path = "/usr/bin/muvm"
 
-[interpreters]
-
 [interpreters.box64]
 path = "/usr/bin/box64"
 
@@ -23,9 +21,3 @@ path = "/usr/bin/qemu-x86_64"
 [interpreters.qemu-static]
 name = "QEMU User space emulator (static)"
 path = "/usr/bin/qemu-x86_64-static"
-
-[binaries]
-
-# [binaries.foo]
-# path = "/usr/bin/foo"
-# emulator = "box64"

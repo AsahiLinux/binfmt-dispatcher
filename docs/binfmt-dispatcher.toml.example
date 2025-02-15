@@ -1,0 +1,48 @@
+# This is an example configuration for binfmt-dispatcher showcasing all
+# available options. In real configurations missing options will be inferred.
+
+[defaults]
+# The id of default interpreter to use, from the interpreters listed below
+interpreter = "fex"
+# The log level to use for binfmt-dispatcher
+# Options: trace, debug, info, warn, error
+log_level = "info"
+
+[muvm]
+# The path to the muvm executable
+path = "/usr/bin/muvm"
+
+[interpreters]
+
+# A minimal interpreter configuration block, which specified just the path.
+# The name is assumed identical to the id, and muvm is disabled.
+[interpreters.box64]
+path = "/usr/bin/box64"
+
+# A fullly specified interpreter configuration block.
+[interpreters.fex]
+# User-facing display name of the interpreter
+name = "FEX"
+# Path to the interpreter executable that can act as a binfmt_misc interpreter
+path = "/usr/bin/FEXInterpreter"
+# Other paths that need to exist for the interpreter to work
+required_paths = ["/usr/share/fex-emu/RootFS/default.erofs"]
+# If set to true, attempt to the detect the system page-size and run the
+# interpreter inside muvm if the page-size is different than 4k
+use_muvm = true
+
+# A minimal interpreter configuration block, which specified just the path.
+# The name is assumed identical to the id, and muvm is disabled.
+[interpreters.box64]
+path = "/usr/bin/box64"
+
+# The binaries section is to customize which interpreter to run for a given
+# binary application.
+
+[binaries]
+
+[binaries.foo]
+# The path to the application binary
+path = "/usr/bin/foo"
+# The interpreter id to use
+interpreter = "box64"
