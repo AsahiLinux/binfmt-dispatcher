@@ -56,6 +56,7 @@ fn main() {
     }
 
     let emulator = settings.emulators.get(emulator_id).unwrap();
+    let emulator_name = emulator.name.as_ref().unwrap();
     let emulator_path = &emulator.path;
 
     let mut use_muvm = emulator.use_muvm.unwrap();
@@ -72,11 +73,12 @@ fn main() {
 
     let mut command;
     if use_muvm {
-        info!("Using muvm");
+        info!("Using {} with muvm", emulator_name);
         command = Command::new("/usr/bin/muvm");
         command.arg("--");
         command.arg(emulator_path);
     } else {
+        info!("Using {}", emulator_name);
         command = Command::new(emulator_path);
     }
 
@@ -87,6 +89,7 @@ fn main() {
 
     // Execute the command and replace the current process
     // Use a panic instead of expecting a return value
+    debug!("Running:\n{:#?}", command);
     let _ = command.exec();
 
     // If exec fails, it will not return; however, we include this to handle the case.

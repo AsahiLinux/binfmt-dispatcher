@@ -13,6 +13,7 @@ pub struct Defaults {
 
 #[derive(Debug, Deserialize)]
 pub struct Emulator {
+    pub name: Option<String>,
     pub path: String,
     pub use_muvm: Option<bool>,
 }
@@ -55,6 +56,18 @@ pub fn parse_config() -> Result<ConfigFile> {
     // Build config
     let config = builder.build()?;
 
-    #[allow(clippy::needless_return)]
-    return config.try_deserialize().map_err(|e| anyhow::anyhow!(e));
+    let mut settings: ConfigFile = config.try_deserialize()?;
+
+    for (key, emulator) in settings.emulators.iter_mut() {
+        // Default to the emulator id as name
+        if emulator.name.is_none() {
+            emulator.name = Some(key.clone());
+        }
+        // Default to not using muvm
+        if emulator.use_muvm.is_none() {
+            emulator.use_muvm = Some(false);
+        }
+    }
+
+    Ok(settings)
 }

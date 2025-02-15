@@ -6,19 +6,19 @@ log_level = "info"
 
 [emulators.box64]
 path = "/usr/bin/box64"
-use_muvm = false
 
 [emulators.fex]
+name = "FEX"
 path = "/usr/bin/FEXInterpreter"
 use_muvm = true
 
 [emulators.qemu]
+name = "QEMU User space emulator"
 path = "/usr/bin/qemu-x86_64"
-use_muvm = false
 
 [emulators.qemu-static]
+name = "QEMU User space emulator (static)"
 path = "/usr/bin/qemu-x86_64-static"
-use_muvm = false
 
 [binaries]
 
