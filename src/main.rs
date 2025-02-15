@@ -70,8 +70,8 @@ fn main() {
             "Will attempt to install missing requirements for {}",
             interpreter_name
         );
-        let mut dnf_command = Command::new("sudo");
-        dnf_command.arg("dnf");
+        let mut dnf_command = Command::new("pkexec");
+        dnf_command.arg("/usr/bin/dnf");
         dnf_command.arg("install");
         dnf_command.args(&interpreter_missing_paths);
         debug!("Running:\n{:#?}", dnf_command);
