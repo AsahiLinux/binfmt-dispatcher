@@ -31,7 +31,6 @@ fn main() {
     let settings: ConfigFile = config::parse_config().unwrap();
 
     let mut emulator_id = &settings.defaults.emulator;
-
     for binary in settings.binaries.values() {
         if Path::new(&binary.path) == canonicalize(&args[0]).unwrap() {
             emulator_id = &binary.emulator;
@@ -41,8 +40,8 @@ fn main() {
 
     let emulator = settings.emulators.get(emulator_id).unwrap();
     let emulator_path = &emulator.path;
-    let mut use_muvm = emulator.use_muvm.unwrap();
 
+    let mut use_muvm = emulator.use_muvm.unwrap();
     if use_muvm {
         if let Some(size) = get_page_size() {
             println!("Page size: {} bytes", size);

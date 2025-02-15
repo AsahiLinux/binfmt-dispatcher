@@ -35,12 +35,10 @@ pub fn parse_config() -> Result<ConfigFile> {
     // Load main config files
     let drop_in_dir = "/usr/lib/binfmt-dispatcher.d";
     if let Ok(entries) = read_dir(drop_in_dir) {
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let path = entry.path();
-                if path.extension().and_then(|ext| ext.to_str()) == Some("toml") {
-                    builder = builder.add_source(File::from(path).required(false));
-                }
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.extension().and_then(|ext| ext.to_str()) == Some("toml") {
+                builder = builder.add_source(File::from(path).required(false));
             }
         }
     }
