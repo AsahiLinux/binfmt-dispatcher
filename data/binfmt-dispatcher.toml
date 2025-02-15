@@ -1,22 +1,22 @@
 [defaults]
-emulator = "fex"
+interpreter = "fex"
 log_level = "info"
 
-[emulators]
+[interpreters]
 
-[emulators.box64]
+[interpreters.box64]
 path = "/usr/bin/box64"
 
-[emulators.fex]
+[interpreters.fex]
 name = "FEX"
 path = "/usr/bin/FEXInterpreter"
 use_muvm = true
 
-[emulators.qemu]
+[interpreters.qemu]
 name = "QEMU User space emulator"
 path = "/usr/bin/qemu-x86_64"
 
-[emulators.qemu-static]
+[interpreters.qemu-static]
 name = "QEMU User space emulator (static)"
 path = "/usr/bin/qemu-x86_64-static"
 

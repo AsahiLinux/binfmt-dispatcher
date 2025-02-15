@@ -7,12 +7,12 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Defaults {
-    pub emulator: String,
+    pub interpreter: String,
     pub log_level: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Emulator {
+pub struct Interpreter {
     pub name: Option<String>,
     pub path: String,
     pub use_muvm: Option<bool>,
@@ -21,13 +21,13 @@ pub struct Emulator {
 #[derive(Debug, Deserialize)]
 pub struct Binaries {
     pub path: String,
-    pub emulator: String,
+    pub interpreter: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
     pub defaults: Defaults,
-    pub emulators: HashMap<String, Emulator>,
+    pub interpreters: HashMap<String, Interpreter>,
     pub binaries: HashMap<String, Binaries>,
 }
 
@@ -58,14 +58,14 @@ pub fn parse_config() -> Result<ConfigFile> {
 
     let mut settings: ConfigFile = config.try_deserialize()?;
 
-    for (key, emulator) in settings.emulators.iter_mut() {
-        // Default to the emulator id as name
-        if emulator.name.is_none() {
-            emulator.name = Some(key.clone());
+    for (key, interpreter) in settings.interpreters.iter_mut() {
+        // Default to the interpreter id as name
+        if interpreter.name.is_none() {
+            interpreter.name = Some(key.clone());
         }
         // Default to not using muvm
-        if emulator.use_muvm.is_none() {
-            emulator.use_muvm = Some(false);
+        if interpreter.use_muvm.is_none() {
+            interpreter.use_muvm = Some(false);
         }
     }
 

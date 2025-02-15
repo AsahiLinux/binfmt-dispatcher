@@ -47,19 +47,19 @@ fn main() {
     let binary = read_link("/proc/self/fd/3").unwrap();
     trace!("Binary: {:#?}", binary);
 
-    let mut emulator_id = &settings.defaults.emulator;
+    let mut interpreter_id = &settings.defaults.interpreter;
     for binary in settings.binaries.values() {
         if Path::new(&binary.path) == canonicalize(&args[0]).unwrap() {
-            emulator_id = &binary.emulator;
+            interpreter_id = &binary.interpreter;
             break;
         }
     }
 
-    let emulator = settings.emulators.get(emulator_id).unwrap();
-    let emulator_name = emulator.name.as_ref().unwrap();
-    let emulator_path = &emulator.path;
+    let interpreter = settings.interpreters.get(interpreter_id).unwrap();
+    let interpreter_name = interpreter.name.as_ref().unwrap();
+    let interpreter_path = &interpreter.path;
 
-    let mut use_muvm = emulator.use_muvm.unwrap();
+    let mut use_muvm = interpreter.use_muvm.unwrap();
     if use_muvm {
         if let Some(size) = get_page_size() {
             debug!("Page size: {} bytes", size);
@@ -73,13 +73,13 @@ fn main() {
 
     let mut command;
     if use_muvm {
-        info!("Using {} with muvm", emulator_name);
+        info!("Using {} with muvm", interpreter_name);
         command = Command::new("/usr/bin/muvm");
         command.arg("--");
-        command.arg(emulator_path);
+        command.arg(interpreter_path);
     } else {
-        info!("Using {}", emulator_name);
-        command = Command::new(emulator_path);
+        info!("Using {}", interpreter_name);
+        command = Command::new(interpreter_path);
     }
 
     command.arg(binary);
