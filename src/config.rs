@@ -12,6 +12,11 @@ pub struct Defaults {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct MuVM {
+    pub path: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Interpreter {
     pub name: Option<String>,
     pub path: String,
@@ -28,6 +33,7 @@ pub struct Binaries {
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
     pub defaults: Defaults,
+    pub muvm: MuVM,
     pub interpreters: HashMap<String, Interpreter>,
     pub binaries: HashMap<String, Binaries>,
 }
@@ -36,6 +42,7 @@ pub fn parse_config() -> Result<ConfigFile> {
     let mut builder = Config::builder()
         .set_default("defaults.interpreter", "qemu")?
         .set_default("defaults.log_level", "info")?
+        .set_default("muvm.path", "/usr/bin/muvm")?
         .set_default("interpreters.qemu.path", "/usr/bin/qemu-x86_64")?
         .set_default("binaries", Value::from(HashMap::<String, Value>::new()))?;
 
@@ -68,6 +75,10 @@ pub fn parse_config() -> Result<ConfigFile> {
         if interpreter.name.is_none() {
             interpreter.name = Some(key.clone());
         }
+        // Default to not using muvm
+        if interpreter.use_muvm.is_none() {
+            interpreter.use_muvm = Some(false);
+        }
         // Default to the interpreter path as required
         if interpreter.required_paths.is_none() {
             interpreter.required_paths = Some(vec![interpreter.path.clone()]);
@@ -78,9 +89,12 @@ pub fn parse_config() -> Result<ConfigFile> {
                 .unwrap()
                 .insert(0, interpreter.path.clone());
         }
-        // Default to not using muvm
-        if interpreter.use_muvm.is_none() {
-            interpreter.use_muvm = Some(false);
+        if interpreter.use_muvm.unwrap() {
+            interpreter
+                .required_paths
+                .as_mut()
+                .unwrap()
+                .push(settings.muvm.path.clone());
         }
     }
 

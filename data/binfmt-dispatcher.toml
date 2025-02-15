@@ -2,6 +2,9 @@
 interpreter = "fex"
 log_level = "info"
 
+[muvm]
+path = "/usr/bin/muvm"
+
 [interpreters]
 
 [interpreters.box64]
