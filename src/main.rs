@@ -7,8 +7,8 @@ use std::ffi::{OsStr, OsString};
 use std::fs::{canonicalize, read_link};
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
-use std::path::Path;
-use std::process::Command;
+use std::path::{Path, PathBuf};
+use std::process::{exit, Command};
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
@@ -42,9 +42,28 @@ fn main() {
     // Collect command line arguments to pass through
     let args: Vec<OsString> = env::args_os().skip(1).collect();
     trace!("Args:\n{:#?}", args);
+    if args.is_empty() {
+        error!("No arguments passed, re-run with --help to learn more.");
+        exit(1)
+    } else {
+        match args[0].to_str().unwrap() {
+            "--help" => {
+                println!("This program is meant to be run as a binfmt_misc handler and has no interactive options. See {} for more information.", env!("CARGO_PKG_HOMEPAGE"));
+                exit(0);
+            }
+            "--version" => {
+                println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+                exit(1);
+            }
+            _ => trace!("Assuming arguments are coming from binfmt_misc"),
+        }
+    }
 
     // File descriptor 3 is where binfmt_misc typically passes the executable
-    let binary = read_link("/proc/self/fd/3").unwrap();
+    let binary: PathBuf = read_link("/proc/self/fd/3").unwrap_or_else(|e| {
+        error!("Failed to read the executable from fd#3: {}", e);
+        exit(1);
+    });
     trace!("Binary: {:#?}", binary);
 
     let mut interpreter_id = &settings.defaults.interpreter;
@@ -83,12 +102,12 @@ fn main() {
                         "Failed to install missing requirements: dnf returned {:?}",
                         status
                     );
-                    std::process::exit(1);
+                    exit(1);
                 }
             }
             Err(e) => {
                 error!("Failed to execute dnf: {}", e);
-                std::process::exit(1);
+                exit(1);
             }
         }
     }
@@ -128,5 +147,5 @@ fn main() {
 
     // If exec fails, it will not return; however, we include this to handle the case.
     error!("Failed to execute binary");
-    std::process::exit(1);
+    exit(1);
 }
