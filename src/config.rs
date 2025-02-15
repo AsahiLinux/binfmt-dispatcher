@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::read_dir;
 
 use anyhow::Result;
-use config::{Config, File};
+use config::{Config, File, Value};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -33,7 +33,11 @@ pub struct ConfigFile {
 }
 
 pub fn parse_config() -> Result<ConfigFile> {
-    let mut builder = Config::builder();
+    let mut builder = Config::builder()
+        .set_default("defaults.interpreter", "qemu")?
+        .set_default("defaults.log_level", "info")?
+        .set_default("interpreters.qemu.path", "/usr/bin/qemu-x86_64")?
+        .set_default("binaries", Value::from(HashMap::<String, Value>::new()))?;
 
     // Load main config files
     let drop_in_dir = "/usr/lib/binfmt-dispatcher.d";
