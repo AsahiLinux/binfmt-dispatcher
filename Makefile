@@ -30,7 +30,7 @@ install-data:
 	install -Dpm0644 -t $(DESTDIR)$(BINFMTDIR)/ data/binfmt-dispatcher-x86.conf
 	install -Dpm0644 -t $(DESTDIR)$(BINFMTDIR)/ data/binfmt-dispatcher-x86_64.conf
 	install -Dpm0644 -t $(DESTDIR)$(SYSCONFIGDIR)/ data/binfmt-dispatcher.toml
-	install -Dpm0644 -t $(DESTDIR)$(POLKITACTIONSDIR)/ data/org.AsahiLinux.BinfmtDispatcher.policy
+	install -Dpm0644 -t $(DESTDIR)$(POLKITACTIONSDIR)/ data/org.AsahiLinux.binfmt_dispatcher.policy
 
 uninstall: uninstall-bin uninstall-data
 
@@ -41,6 +41,6 @@ uninstall-data:
 	rm -f $(DESTDIR)$(BINFMTDIR)/binfmt-dispatcher-x86.conf
 	rm -f $(DESTDIR)$(BINFMTDIR)/binfmt-dispatcher-x86_64.conf
 	rm -f $(DESTDIR)$(SYSCONFIGDIR)/binfmt-dispatcher.toml
-	rm -f $(DESTDIR)$(POLKITACTIONSDIR)/org.AsahiLinux.BinfmtDispatcher.policy
+	rm -f $(DESTDIR)$(POLKITACTIONSDIR)/org.AsahiLinux.binfmt_dispatcher.policy
 
 .PHONY: check install install-bin install-data uninstall uninstall-bin uninstall-data

@@ -6,10 +6,10 @@
   <vendor>binfmt-dispatcher</vendor>
   <vendor_url>https://github.com/davide125/binfmt-dispatcher</vendor_url>
 
-  <action id="org.gnome.pkexec.binfmt-dispatcher">
+  <action id="org.AsahiLinux.binfmt_dispatcher.pkexec.dnf">
     <description>Install missing requirements for the interpreter</description>
     <message>Authentication is required to install the missing requirements for the interpreter</message>
-    <icon_name>org.startup_disk.StartupDisk</icon_name>
+    <icon_name>system-software-install</icon_name>
     <defaults>
       <allow_any>auth_admin_keep</allow_any>
       <allow_inactive>auth_admin_keep</allow_inactive>
