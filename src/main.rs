@@ -2,7 +2,7 @@ use libc::{sysconf, _SC_PAGESIZE};
 use std::collections::HashMap;
 use std::env;
 use std::ffi::OsString;
-use std::fs::{canonicalize, read_link};
+use std::fs::{canonicalize, read_dir, read_link};
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
 use std::path::Path;
@@ -53,10 +53,31 @@ fn main() {
     // File descriptor 3 is where binfmt_misc typically passes the executable
     let binary = read_link("/proc/self/fd/3").unwrap();
 
-    let config = Config::builder()
-        .add_source(File::with_name("/etc/binfmt-dispatcher.toml"))
-        .build()
-        .unwrap();
+    let mut builder = Config::builder();
+
+    // Load main config files
+    let drop_in_dir = "/usr/lib/binfmt-dispatcher.d";
+    if let Ok(entries) = read_dir(drop_in_dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                if path.extension().and_then(|ext| ext.to_str()) == Some("toml") {
+                    builder = builder.add_source(File::from(path).required(false));
+                }
+            }
+        }
+    }
+
+    // Load local config from /etc
+    builder = builder.add_source(File::with_name("/etc/binfmt-dispatcher.toml").required(false));
+
+    // Load user config
+    let xdg_dirs = xdg::BaseDirectories::with_prefix("binfmt-dispatcher").unwrap();
+    let xdg_config = xdg_dirs.get_config_file("binfmt-dispatcher.toml");
+    builder = builder.add_source(File::from(xdg_config).required(false));
+
+    // Build config
+    let config = builder.build().unwrap();
 
     let settings: ConfigFile = config.try_deserialize().unwrap();
 
