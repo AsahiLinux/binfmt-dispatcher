@@ -1,0 +1,44 @@
+# See the documentation for more information:
+# https://packit.dev/docs/configuration/
+
+specfile_path: rust-binfmt-dispatcher.spec
+files_to_sync:
+  - rust-binfmt-dispatcher.spec
+  - .packit.yaml
+
+upstream_package_name: binfmt-dispatcher
+downstream_package_name: rust-binfmt-dispatcher
+actions:
+  get-current-version: "bash -c \"cargo pkgid | awk -F'[#@]' '{print $NF}'\""
+  # Fetch the specfile from Rawhide and drop any patches
+  post-upstream-clone: "bash -c \"curl -s https://src.fedoraproject.org/rpms/rust-binfmt-dispatcher/raw/main/f/rust-binfmt-dispatcher.spec | sed -e '/^Patch[0-9]/d' > rust-binfmt-dispatcher.spec\""
+
+srpm_build_deps:
+  - awk
+  - bash
+  - cargo
+  - curl
+  - sed
+
+jobs:
+- job: copr_build
+  trigger: commit
+  owner: "@asahi"
+  project: packit-builds
+  targets:
+    - fedora-all-aarch64
+    - fedora-all-i386
+    - fedora-all-ppc64le
+    - fedora-all-s390x
+    - fedora-all-x86_64
+
+- job: copr_build
+  trigger: pull_request
+  owner: "@asahi"
+  project: packit-builds
+  targets:
+    - fedora-all-aarch64
+    - fedora-all-i386
+    - fedora-all-ppc64le
+    - fedora-all-s390x
+    - fedora-all-x86_64

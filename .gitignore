@@ -1,1 +1,4 @@
 /target
+/rust-binfmt-dispatcher\.spec
+/rust-binfmt-dispatcher-*\.src\.rpm
+/binfmt-dispatcher-*\.tar\.gz
