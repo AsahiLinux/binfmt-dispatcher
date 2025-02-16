@@ -10,8 +10,8 @@ upstream_package_name: binfmt-dispatcher
 downstream_package_name: rust-binfmt-dispatcher
 actions:
   get-current-version: "bash -c \"cargo pkgid | awk -F'[#@]' '{print $NF}'\""
-  # Fetch the specfile from Rawhide and drop any patches
-  post-upstream-clone: "bash -c \"curl -s https://src.fedoraproject.org/rpms/rust-binfmt-dispatcher/raw/main/f/rust-binfmt-dispatcher.spec | sed -e '/^Patch[0-9]/d' > rust-binfmt-dispatcher.spec\""
+  # Fetch the specfile from Rawhide, drop any patches and disable rpmautospec
+  post-upstream-clone: "bash -c \"curl -s https://src.fedoraproject.org/rpms/rust-binfmt-dispatcher/raw/main/f/rust-binfmt-dispatcher.spec | sed -e '/^Patch[0-9]/d' -e '/^%autochangelog$/d' > rust-binfmt-dispatcher.spec\""
 
 srpm_build_deps:
   - awk
