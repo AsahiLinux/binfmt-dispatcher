@@ -5,6 +5,7 @@ use libc::{sysconf, _SC_PAGESIZE};
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{canonicalize, read_link};
+use std::io::{stdin, IsTerminal};
 use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
@@ -89,7 +90,18 @@ fn main() {
             "Will attempt to install missing requirements for {}",
             interpreter_name
         );
-        let mut dnf_command = Command::new("pkexec");
+
+        let mut dnf_command;
+        if stdin().is_terminal() {
+            trace!("Running in a terminal");
+            dnf_command = Command::new("pkexec");
+        } else {
+            trace!("Not running in a terminal");
+            dnf_command = Command::new("xdg-terminal-exec");
+            dnf_command.arg("--");
+            dnf_command.arg("pkexec");
+        }
+
         dnf_command.arg("/usr/bin/dnf");
         dnf_command.arg("install");
         dnf_command.args(&interpreter_missing_paths);
