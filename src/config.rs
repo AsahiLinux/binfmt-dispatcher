@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 use std::collections::HashMap;
 use std::fs::read_dir;
 

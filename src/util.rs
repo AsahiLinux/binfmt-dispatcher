@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 use libc::{sysconf, _SC_PAGESIZE};
 use std::os::raw::c_long;
 
