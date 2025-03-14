@@ -1,29 +1,19 @@
 mod config;
 use crate::config::ConfigFile;
 
-use libc::{sysconf, _SC_PAGESIZE};
+mod util;
+use crate::util::get_page_size;
+
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{canonicalize, read_link};
 use std::io::{stdin, IsTerminal};
-use std::os::raw::c_long;
 use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{exit, Command};
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
-
-fn get_page_size() -> Option<usize> {
-    unsafe {
-        let page_size: c_long = sysconf(_SC_PAGESIZE);
-        if page_size == -1 {
-            None // Error retrieving page size
-        } else {
-            Some(page_size as usize)
-        }
-    }
-}
 
 fn main() {
     // Parse config
