@@ -1,6 +1,6 @@
 [package]
 name = "binfmt-dispatcher"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Davide Cavalca <davide@cavalca.name>"]
 edition = "2021"
 description = "Smart dispatcher for binfmt_misc"
