@@ -23,7 +23,9 @@ binfmt-dispatcher parses configuration from several sources:
 Configs are parsed in order and later settings win. A fully commented config is [provided](docs/binfmt-dispatcher.toml.example) and should be fairly self-explanatory.
 
 ## Usage
-When run as an interpreter, binfmt-dispatcher will parse the configs, pick the best interpreter to use based on it and the binary being run, and then run it. If enabled (via the `use_muvm` config setting), binfmt-dispatcher will use [muvm](https://github.com/AsahiLinux/muvm) to execute the interpreter in a microVM if the system page-size is not 4k.
+When run as an interpreter, binfmt-dispatcher will parse the configs, pick the best interpreter to use based on it and the binary being run, and then run it. If enabled (via the `use_muvm` config setting), binfmt-dispatcher will use [muvm](https://github.com/AsahiLinux/muvm) to execute the interpreter in a microVM if the system page-size is not 4k. If the interpreter or any of its dependencies are missing, binfmt-dispatcher will attempt to install them by invoking the package manager.
+
+If run outside of a terminal session, binfmt-dispatcher will assume it's being run as part of a desktop environment (e.g. because a user double clicked on an x86-64 binary in a file manager). If [zenity](https://help.gnome.org/users/zenity/stable/) is installed, dialog boxes will be displayed to provide feedback to the user when necessary. If it's necessary to install any missing dependencies, the package manager will be run inside a terminal emulator via [xdg-terminal-exec](https://github.com/Vladimir-csp/xdg-terminal-exec).
 
 ## License
 This project is [MIT](https://spdx.org/licenses/MIT.html) licensed. See the [LICENSE](LICENSE) file for the full text of the license.

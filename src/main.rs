@@ -5,6 +5,7 @@ use crate::config::ConfigFile;
 
 mod util;
 use crate::util::get_page_size;
+use crate::util::{error_dialog, info_dialog};
 
 use std::env;
 use std::ffi::{OsStr, OsString};
@@ -16,6 +17,14 @@ use std::process::{exit, Command};
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
+
+fn abort(msg: &str) {
+    error!("{}", msg);
+    if !stdin().is_terminal() {
+        error_dialog(msg);
+    }
+    exit(1)
+}
 
 fn main() {
     // Parse config
@@ -36,8 +45,7 @@ fn main() {
     let args: Vec<OsString> = env::args_os().skip(1).collect();
     trace!("Args:\n{:#?}", args);
     if args.is_empty() {
-        error!("No arguments passed, re-run with --help to learn more.");
-        exit(1)
+        abort("No arguments passed, re-run with --help to learn more.");
     } else {
         match args[0].to_str().unwrap() {
             "--help" => {
@@ -82,6 +90,12 @@ fn main() {
             "Will attempt to install missing requirements for {}",
             interpreter_name
         );
+        if !stdin().is_terminal() {
+            info_dialog(&format!(
+                "To run this program, {} needs to be installed.",
+                interpreter_name
+            ));
+        }
 
         let mut dnf_command;
         if stdin().is_terminal() {
@@ -102,16 +116,16 @@ fn main() {
             Ok(mut child) => {
                 let status = child.wait().expect("Failed to wait on dnf process");
                 if !status.success() {
-                    error!(
+                    debug!(
                         "Failed to install missing requirements: dnf returned {:?}",
                         status
                     );
-                    exit(1);
+                    abort("The installation failed. Please try again.");
                 }
             }
             Err(e) => {
-                error!("Failed to execute dnf: {}", e);
-                exit(1);
+                debug!("Failed to execute dnf: {}", e);
+                abort("The package manager failed to start. Please try again.");
             }
         }
     }
@@ -123,7 +137,10 @@ fn main() {
             // Use muvm if the page-size is not 4k
             use_muvm = size != 4096;
         } else {
-            error!("Failed to get page size");
+            debug!("Failed to get page size");
+            if !stdin().is_terminal() {
+                error_dialog("We were unable to detect the system page size. The program might not execute correctly.");
+            }
             use_muvm = false;
         }
     }
@@ -150,6 +167,5 @@ fn main() {
     let _ = command.exec();
 
     // If exec fails, it will not return; however, we include this to handle the case.
-    error!("Failed to execute binary");
-    exit(1);
+    abort("The program failed to execute.");
 }
